@@ -238,6 +238,46 @@ h3.person{border-left-color:var(--red)}
   .toc h2 .de{font-size:10px;margin-left:.8em}
 }
 
+/* ---- 表紙の動き：開くと門がひらき、背景の光がゆっくり揺れ続ける ----
+   端末で「視差効果を減らす／アニメーションを減らす」を選んでいる人には動かさない */
+@media (prefers-reduced-motion: no-preference){
+  @keyframes cv-fade{from{opacity:0}to{opacity:1}}
+  @keyframes cv-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes cv-doorL{to{transform:translateX(-101%)}}
+  @keyframes cv-doorR{to{transform:translateX(101%)}}
+  @keyframes cv-sway1{from{transform:translate(0,0)}to{transform:translate(16px,12px)}}
+  @keyframes cv-sway2{0%{transform:translate(0,0);opacity:.75}50%{opacity:1}100%{transform:translate(-18px,10px);opacity:.8}}
+
+  /* 背景の丸い光：同じ位置のまま別の層に移し、層ごとゆっくり動かす */
+  .cover{position:relative;overflow:hidden;isolation:isolate;background-image:none}
+  .cover>*{position:relative;z-index:1}
+  .cover::before,.cover::after{content:"";position:absolute;inset:-120px;pointer-events:none;will-change:transform}
+  .cover::before{
+    background-image:
+      radial-gradient(circle at calc(12% + 91.2px) calc(18% + 76.8px),rgba(255,255,255,.07) 0 70px,transparent 71px),
+      radial-gradient(circle at calc(20% + 72px) calc(82% - 76.8px),rgba(0,0,0,.10) 0 90px,transparent 91px);
+    animation:cv-sway1 11s ease-in-out infinite alternate}
+  .cover::after{
+    background-image:
+      radial-gradient(circle at calc(30% + 48px) calc(20% + 72px),rgba(255,250,220,.08) 0 90px,transparent 230px),
+      radial-gradient(circle at calc(88% - 91.2px) calc(34% + 38.4px),rgba(255,255,255,.05) 0 110px,transparent 111px),
+      radial-gradient(circle at calc(82% - 76.8px) calc(88% - 91.2px),rgba(255,255,255,.05) 0 60px,transparent 61px);
+    animation:cv-sway2 8s ease-in-out infinite alternate}
+
+  /* 門：アーチの中の扉が左右にひらく */
+  .cover h1{overflow:hidden}
+  .cover h1::before,.cover h1::after{content:"";position:absolute;top:0;bottom:0;width:50%;z-index:2;background:#18493a;box-shadow:inset 0 0 0 1px rgba(243,241,231,.18);animation:1.5s cubic-bezier(.65,0,.25,1) 1s both}
+  .cover h1::before{left:0;border-right:1px solid rgba(199,167,88,.6);animation-name:cv-doorL}
+  .cover h1::after{right:0;border-left:1px solid rgba(199,167,88,.6);animation-name:cv-doorR}
+
+  /* 文字の出かた */
+  .cover .de-top{animation:cv-fade 1s ease .1s both}
+  .cover .crest{animation:cv-rise 1s ease .2s both}
+  .cover .theme{animation:cv-rise 1s ease .45s both}
+  .cover h1 .k,.cover h1 .t{animation:cv-fade 1.2s ease 1.6s both}
+  .cover h1 .de-title,.cover h1 .y{animation:cv-fade 1s ease 2.1s both}
+}
+
 </style>
 </head>
 <body>
